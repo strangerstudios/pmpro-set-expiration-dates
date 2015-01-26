@@ -3,7 +3,7 @@
 Plugin Name: PMPro Set Expiration Dates
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
 Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code. 
-Version: .1.1
+Version: .1.2
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -47,17 +47,19 @@ add_action("pmpro_save_membership_level", "pmprosed_pmpro_save_membership_level"
 /*
 	Update expiration date of level at checkout.
 */
-function pmprosed_pmpro_checkout_level($level)
+function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
 {
     global $wpdb;
 
-    //get discount code passed in
-    $discount_code = preg_replace("/[^A-Za-z0-9\-]/", "", $_REQUEST['discount_code']);
+    if(empty($discount_code_id)) {
+        //get discount code passed in
+        $discount_code = preg_replace("/[^A-Za-z0-9\-]/", "", $_REQUEST['discount_code']);
 
-    if(!empty($discount_code))
-        $discount_code_id = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql($discount_code) . "' LIMIT 1");
-    else
-        $discount_code_id = NULL;
+        if(!empty($discount_code))
+            $discount_code_id = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql($discount_code) . "' LIMIT 1");
+        else
+            $discount_code_id = NULL;
+    }
 
     //does this level have a set expiration date?
     $set_expiration_date = pmpro_getSetExpirationDate($level->id, $discount_code_id);
@@ -124,6 +126,7 @@ function pmprosed_pmpro_checkout_level($level)
     return $level;	//no change
 }
 add_filter("pmpro_checkout_level", "pmprosed_pmpro_checkout_level");
+add_filter('pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2);
 
 /*	
 	This function will save a the set expiration dates into wp_options.

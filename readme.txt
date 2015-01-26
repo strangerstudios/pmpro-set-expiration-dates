@@ -3,7 +3,7 @@ Contributors: strangerstudios
 Tags: paid memberships pro, pmpro, memberships, ecommerce, expiration
 Requires at least: 3.0
 Tested up to: 3.9.1
-Stable tag: .1.1
+Stable tag: .1.2
 
 Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code in YYYY-MM-DD format.
 Enter "Y" for current year, "Y2" for next year. "M", "M2" for current/next month.
@@ -21,6 +21,9 @@ This plugin requires Paid Memberships Pro to function.
 1. Change the expiration date on the edit levels and edit discount code pages.
 
 == Changelog ==
+= .1.2 =
+* Fixed bug when applying discount codes
+
 = .1.1 =
 * "Y" variable now starts from the next year if the expiration date has already passed.
 
