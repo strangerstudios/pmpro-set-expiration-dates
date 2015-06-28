@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: PMPro Set Expiration Dates
+Plugin Name: Paid Memberships Pro - Set Expiration Dates Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
 Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code. 
-Version: .1
+Version: .1.1
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -45,6 +45,26 @@ function pmprosed_pmpro_save_membership_level($level_id)
 add_action("pmpro_save_membership_level", "pmprosed_pmpro_save_membership_level");
 
 /*
+	Function to replace Y and M/etc with actual dates
+*/
+function pmprosed_fixDate($set_expiration_date)
+{
+	$Y = date("Y", current_time('timestamp'));
+	$Y2 = intval($Y) + 1;
+	$M = date("m", current_time('timestamp'));
+	if($M == 12)
+		$M2 = "01";
+	else
+		$M2 = str_pad(intval($M) + 1, 2, "0", STR_PAD_LEFT);
+	$searches = array("Y-", "Y2-", "M-", "M2-");
+	$replacements = array($Y . "-", $Y2 . "-", $M . "-", $M2 . "-");
+	
+	$set_expiration_date = str_replace($searches, $replacements, $set_expiration_date);
+
+	return $set_expiration_date;
+}
+
+/*
 	Update expiration date of level at checkout.
 */
 function pmprosed_pmpro_checkout_level($level)
@@ -52,7 +72,10 @@ function pmprosed_pmpro_checkout_level($level)
 	global $wpdb;
 	
 	//get discount code passed in
-	$discount_code = preg_replace("/[^A-Za-z0-9\-]/", "", $_REQUEST['discount_code']);
+	if(!empty($_REQUEST['discount_code']))
+		$discount_code = preg_replace("/[^A-Za-z0-9\-]/", "", $_REQUEST['discount_code']);
+	else
+		$discount_code = NULL;
 	
 	if(!empty($discount_code))
 		$discount_code_id = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql($discount_code) . "' LIMIT 1");
@@ -65,21 +88,12 @@ function pmprosed_pmpro_checkout_level($level)
 	if(!empty($set_expiration_date))
 	{
 		//replace vars
-		$Y = date("Y");
-		$Y2 = intval($Y) + 1;
-		$M = date("m");
-		if($M == 12)
-			$M2 = "01";
-		else
-			$M2 = str_pad(intval($M) + 1, 2, "0", STR_PAD_LEFT);
-		$searches = array("Y-", "Y2-", "M-", "M2-");
-		$replacements = array($Y . "-", $Y2 . "-", $M . "-", $M2 . "-");
-		
-		$set_expiration_date = str_replace($searches, $replacements, $set_expiration_date);
+		$set_expiration_date = pmprosed_fixDate($set_expiration_date);
 		
 		//how many days until expiration
-		$todays_date = time();
+		$todays_date = current_time('timetsamp');
 		$time_left = strtotime($set_expiration_date) - $todays_date;
+		
 		if($time_left > 0)
 		{
 			$days_left = ceil($time_left/(60*60*24));
@@ -94,7 +108,7 @@ function pmprosed_pmpro_checkout_level($level)
 		{
 			//expiration already here, don't let people signup
 			$level = NULL;
-			
+		
 			return $level; //stop
 		}
 	}
@@ -170,3 +184,36 @@ function pmprosed_pmpro_save_discount_code_level($code_id, $level_id)
 	}	
 }
 add_action("pmpro_save_discount_code_level", "pmprosed_pmpro_save_discount_code_level", 10, 2);
+
+/*
+Function to add links to the plugin row meta
+*/
+function pmprosed_plugin_row_meta($links, $file) {
+	if(strpos($file, 'pmpro-set-expiration-dates.php') !== false)
+	{
+		$new_links = array(
+			'<a href="' . esc_url('http://www.paidmembershipspro.com/add-ons/plugins-on-github/pmpro-expiration-date/')  . '" title="' . esc_attr( __( 'View Documentation', 'pmpro' ) ) . '">' . __( 'Docs', 'pmpro' ) . '</a>',
+			'<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr( __( 'Visit Customer Support Forum', 'pmpro' ) ) . '">' . __( 'Support', 'pmpro' ) . '</a>',
+		);
+		$links = array_merge($links, $new_links);
+	}
+	return $links;
+}
+add_filter('plugin_row_meta', 'pmprosed_plugin_row_meta', 10, 2);
+
+/*
+	Update expiration text on levels page.
+*/
+function pmprosed_pmpro_level_expiration_text($expiration_text, $level)
+{
+	$set_expiration_date = pmpro_getSetExpirationDate($level->id);
+	
+	if(!empty($set_expiration_date))
+	{
+		$set_expiration_date = pmprosed_fixDate($set_expiration_date);
+		$expiration_text = "Membership expires on " . date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) . ".";
+	}
+
+	return $expiration_text;
+}
+add_filter('pmpro_level_expiration_text', 'pmprosed_pmpro_level_expiration_text', 10, 2);
