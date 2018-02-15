@@ -7,11 +7,21 @@ Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro member
 Version: .3
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
+Text Domain: pmprosed
 */
 
 /*
 	This first set of functions adds our fields to the edit membership levels page
 */
+
+/*
+	Load plugin textdomain.
+*/
+function pmprosed_load_textdomain() {
+  load_plugin_textdomain( 'pmprosed', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' ); 
+}
+add_action( 'plugins_loaded', 'pmprosed_load_textdomain' );
+
 //add level cost text field to level price settings
 function pmprosed_pmpro_membership_level_after_other_settings()
 {
@@ -249,8 +259,8 @@ function pmprosed_plugin_row_meta($links, $file)
 {
     if (strpos($file, 'pmpro-set-expiration-dates.php') !== false) {
         $new_links = array(
-            '<a href="' . esc_url('http://www.paidmembershipspro.com/add-ons/plugins-on-github/pmpro-expiration-date/') . '" title="' . esc_attr(__('View Documentation', 'pmpro')) . '">' . __('Docs', 'pmpro') . '</a>',
-            '<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr(__('Visit Customer Support Forum', 'pmpro')) . '">' . __('Support', 'pmpro') . '</a>',
+            '<a href="' . esc_url('http://www.paidmembershipspro.com/add-ons/plugins-on-github/pmpro-expiration-date/') . '" title="' . esc_attr(__('View Documentation', 'pmprosed')) . '">' . __('Docs', 'pmprosed') . '</a>',
+            '<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr(__('Visit Customer Support Forum', 'pmprosed')) . '">' . __('Support', 'pmprosed') . '</a>',
         );
         $links = array_merge($links, $new_links);
     }
@@ -267,7 +277,7 @@ function pmprosed_pmpro_level_expiration_text($expiration_text, $level)
 
     if (!empty($set_expiration_date)) {
         $set_expiration_date = pmprosed_fixDate($set_expiration_date);
-        $expiration_text = "Membership expires on " . date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) . ".";
+        $expiration_text = sprintf(__("Membership expires on %s.","pmprosed"), date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) );
     }
 
     return $expiration_text;

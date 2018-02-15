@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PMPro Set Expiration Date\n"
+"POT-Creation-Date: 2018-02-15 11:35+0100\n"
+"PO-Revision-Date: 2018-02-15 11:36+0100\n"
+"Last-Translator: Alfonso Sánchez Uzábal <skotperez@voragine.net>\n"
+"Language-Team: Montera34 <info@montera34.com>\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: .git\n"
+"X-Poedit-SearchPathExcluded-1: languages\n"
+
+#: pmpro-set-expiration-dates.php:252
+msgid "View Documentation"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:252
+msgid "Docs"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:253
+msgid "Visit Customer Support Forum"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:253
+msgid "Support"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:270
+#, php-format
+msgid "Membership expires on %s."
+msgstr "L'adhésion expire le %s."
