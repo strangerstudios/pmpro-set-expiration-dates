@@ -181,7 +181,9 @@ function pmpro_saveSetExpirationDate($level_id, $set_expiration_date, $code_id =
         $key = "pmprosed_" . $level_id;
     }
 
-    update_option($key, $set_expiration_date);
+    $autoload = apply_filters( 'pmprosed_option_autoload', null );
+
+    update_option($key, $set_expiration_date, $autoload);
 }
 
 /*
