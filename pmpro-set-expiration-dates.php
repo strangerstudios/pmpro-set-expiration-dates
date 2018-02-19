@@ -277,7 +277,7 @@ function pmprosed_pmpro_level_expiration_text($expiration_text, $level)
 
     if (!empty($set_expiration_date)) {
         $set_expiration_date = pmprosed_fixDate($set_expiration_date);
-        $expiration_text = sprintf(__("Membership expires on %s.","pmprosed"), date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) );
+        $expiration_text = sprintf(__("Membership expires on %s.","pmprosed"), date_i18n(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) );
     }
 
     return $expiration_text;
