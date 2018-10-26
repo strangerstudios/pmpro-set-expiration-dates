@@ -4,7 +4,7 @@
 Plugin Name: Paid Memberships Pro - Set Expiration Dates Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
 Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code. 
-Version: .3
+Version: .3.2
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -51,8 +51,10 @@ add_action("pmpro_save_membership_level", "pmprosed_pmpro_save_membership_level"
 
 /*
 	Function to replace Y and M/etc with actual dates
+	Modified by aquiferweb to allow calculation from an existing date,
+	rather than always using current time
 */
-function pmprosed_fixDate($set_expiration_date)
+function pmprosed_fixDate($set_expiration_date,$timestamp_to_work_from)
 {
     // handle lower-cased y/m values.
     $set_expiration_date = strtoupper($set_expiration_date);
@@ -61,9 +63,9 @@ function pmprosed_fixDate($set_expiration_date)
     $has_M = (strpos($set_expiration_date, "M") !== false);
     $has_Y = (strpos($set_expiration_date, "Y") !== false);
 
-    $Y = date("Y", current_time('timestamp'));
+    $Y = date("Y", $timestamp_to_work_from);
     $Y2 = intval($Y) + 1;
-    $M = date("m", current_time('timestamp'));
+    $M = date("m", $timestamp_to_work_from);
     if ($M == 12) {
         //set to Jan
         $M2 = "01";
@@ -127,8 +129,14 @@ function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
     }
 
     if (!empty($set_expiration_date)) {
+		
+		// check if the user already has an expiration date for this level
+		// use this if they do, if not, use current timestamp
+		$timestamp_to_work_from = pmprosed_get_existing_expiry_date($level);
+   
         //replace vars
-        $set_expiration_date = pmprosed_fixDate($set_expiration_date);
+		// added $timestamp_to_work_from to allow calculation from existing expiry date
+        $set_expiration_date = pmprosed_fixDate($set_expiration_date,$timestamp_to_work_from);
 
         //how many days until expiration
         $todays_date = time();
@@ -168,7 +176,88 @@ function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
 }
 add_filter("pmpro_checkout_level", "pmprosed_pmpro_checkout_level");
 add_filter('pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2);
-add_filter('pmpro_ipnhandler_level', 'pmprosed_pmpro_checkout_level');
+
+/*
+	Update expiration date of level during IPN requests
+	NB almost identical to previous function EXCEPT uses different arguments
+	Does not currently change any functionality, but allows later modifications that rely on knowing the $user_id during an IPN request
+*/
+function pmprosed_pmpro_ipnhandler($level, $user_id)
+{
+    global $wpdb;
+
+	// removed first mention of $discount_code_id here as it is not passed to this function
+	// unsure if $_REQUEST is ever used with IPN??
+	// Left this section in in case it is (aquiferweb)
+    if (!empty($_REQUEST['discount_code'])) {
+        //get discount code passed in
+        $discount_code = preg_replace("/[^A-Za-z0-9\-]/", "", $_REQUEST['discount_code']);
+        if (!empty($discount_code)) {
+            $discount_code_id = $wpdb->get_var("SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql($discount_code) . "' LIMIT 1");
+        } else {
+            $discount_code_id = NULL;
+        }
+    }else{
+		$discount_code_id = NULL;
+	}
+
+    //does this level have a set expiration date?
+    $set_expiration_date = pmpro_getSetExpirationDate($level->id, $discount_code_id);
+
+    //check for Y
+    if (strpos($set_expiration_date, "Y") !== false) {
+        $used_y = true;
+    }
+
+    if (!empty($set_expiration_date)) {
+			
+		// check if the user already has an expiration date for this level
+		// use this if they do, if not, use current timestamp
+		$timestamp_to_work_from = pmprosed_get_existing_expiry_date($level,$user_id);
+		
+        //replace vars
+		// added $timestamp_to_work_from to allow calculation from existing expiry date
+        $set_expiration_date = pmprosed_fixDate($set_expiration_date,$timestamp_to_work_from);
+
+        //how many days until expiration
+        $todays_date = time();
+        $time_left = strtotime($set_expiration_date) - $todays_date;
+        if ($time_left > 0) {
+            $days_left = ceil($time_left / (60 * 60 * 24));
+
+            //update number and period
+            $level->expiration_number = $days_left;
+            $level->expiration_period = "Day";
+
+            return $level;    //stop
+        } elseif (!empty($used_y)) {
+            $timestamp = strtotime($set_expiration_date);
+
+            //add one year to expiration date
+            $set_expiration_date = date("Y-m-d", mktime(0, 0, 0, date('m', $timestamp), date('d', $timestamp), date('Y', $timestamp) + 1));
+
+            //how many days until expiration
+            $time_left = strtotime($set_expiration_date) - $todays_date;
+            $days_left = ceil($time_left / (60 * 60 * 24));
+
+            //update number and period
+            $level->expiration_number = $days_left;
+            $level->expiration_period = "Day";
+
+            return $level; //stop
+        } else {
+            //expiration already here, don't let people signup
+            $level = NULL;
+
+            return $level; //stop
+        }
+    }
+
+    return $level;    //no change
+}
+
+// added priority and number of variables here
+add_filter('pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler',15,2);
 
 /*	
 	This function will save a the set expiration dates into wp_options.
@@ -266,10 +355,51 @@ function pmprosed_pmpro_level_expiration_text($expiration_text, $level)
     $set_expiration_date = pmpro_getSetExpirationDate($level->id);
 
     if (!empty($set_expiration_date)) {
-        $set_expiration_date = pmprosed_fixDate($set_expiration_date);
+		$timestamp_to_work_from = pmprosed_get_existing_expiry_date($level);		
+        $set_expiration_date = pmprosed_fixDate($set_expiration_date,$timestamp_to_work_from);
         $expiration_text = "Membership expires on " . date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) . ".";
     }
 
     return $expiration_text;
 }
 add_filter('pmpro_level_expiration_text', 'pmprosed_pmpro_level_expiration_text', 10, 2);
+
+
+// Gets current expiration date of a user (for the level being renewed) 
+											  
+
+
+function pmprosed_get_existing_expiry_date($level,$user_id = null){
+	
+	// if called during an IPN request, we need to use $user_id passed in by the filter ($user_id is not null)
+	// if called by the checkout_level or discount_code filters, we can use $current_user, (and $user_id will be null to start with)
+	global $current_user;
+	if(!$user_id) $user_id = $current_user->ID;	
+	
+															  
+	// get the current enddate of the membership (for current level)
+	$user_level = pmpro_getSpecificMembershipLevelForUser( $user_id, $level->id );
+	
+	// calculate time remaining for current level
+  
+											
+	$todays_date = current_time( 'timestamp' );
+	$expiration_date = $user_level->enddate;
+	$time_left = $expiration_date - $todays_date;
+	
+	if ( empty( $user_level ) || empty( $user_level->enddate ) || $time_left<=0 ) {
+		// user has no future expiration date
+		// calculate new date from today's timestamp
+		$timestamp_to_work_from = current_time('timestamp');
+	}else{
+		// user has an expiration date in the future for this level
+		// return that date 
+		// NB we also add one day to ensure that, if we are on the last day of the month, that we move to the first day of the next month
+																	
+		// this tries to avoid problems when working with the last day of the month	
+																	 
+		$timestamp_to_work_from = strtotime("+1 day",$user_level->enddate);
+	}
+
+	return $timestamp_to_work_from;
+}
