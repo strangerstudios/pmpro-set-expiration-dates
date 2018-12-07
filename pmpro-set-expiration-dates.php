@@ -4,7 +4,7 @@
 Plugin Name: Paid Memberships Pro - Set Expiration Dates Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
 Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code. 
-Version: .3
+Version: .4
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -61,9 +61,9 @@ function pmprosed_fixDate($set_expiration_date)
     $has_M = (strpos($set_expiration_date, "M") !== false);
     $has_Y = (strpos($set_expiration_date, "Y") !== false);
 
-    $Y = date("Y", current_time('timestamp'));
+    $Y = $Y1 = date("Y", current_time('timestamp'));
     $Y2 = intval($Y) + 1;
-    $M = date("m", current_time('timestamp'));
+    $M = $M1 = date("m", current_time('timestamp'));
     if ($M == 12) {
         //set to Jan
         $M2 = "01";
@@ -71,11 +71,14 @@ function pmprosed_fixDate($set_expiration_date)
         //set this year to next
         if ($has_Y) {
             $Y = $Y2;
+            $Y1 = $Y2;
         }
-    } else
+    } else {
         $M2 = str_pad(intval($M) + 1, 2, "0", STR_PAD_LEFT);
-    $searches = array("Y-", "Y2-", "M-", "M2-");
-    $replacements = array($Y . "-", $Y2 . "-", $M . "-", $M2 . "-");
+    }
+    
+    $searches = array("Y-", "Y1-", "Y2-", "M-", "M1-", "M2-");
+    $replacements = array($Y . "-", $Y1 . "-", $Y2 . "-", $M . "-", $M1 . "-", $M2 . "-");
 
     //note I changed the var name here
     $new_expiration_date = str_replace($searches, $replacements, $set_expiration_date);
@@ -84,8 +87,10 @@ function pmprosed_fixDate($set_expiration_date)
     if ($new_expiration_date <= date('Y-m-d', current_time('timestamp'))) {
         if ($has_M) {
             $new_expiration_date = str_replace("M-", "M2-", $set_expiration_date);
+            $new_expiration_date = str_replace("M1-", "M2-", $set_expiration_date);
         } else {
             $new_expiration_date = str_replace("Y-", "Y2-", $set_expiration_date);  //assume has_Y
+            $new_expiration_date = str_replace("Y1-", "Y2-", $set_expiration_date);  //assume has_Y
         }
 
         $new_expiration_date = str_replace($searches, $replacements, $new_expiration_date);
