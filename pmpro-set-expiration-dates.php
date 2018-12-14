@@ -63,18 +63,21 @@ function pmprosed_fixDate($set_expiration_date)
 
     $date_parts = explode( '-', $set_expiration_date );
     $day_part = $date_parts[count($date_parts) - 1];
+    $month_part = $date_parts[count($date_parts) - 2];
 
     $now = current_time( 'timestamp' );
     $Y = $Y1 = date("Y", $now );
     $Y2 = intval($Y) + 1;
     $M = $M1 = date("m", $now );
     $D = $D1 = date("j", $now );
+    
     if ( $M == 12 ) {
         //set to Jan
         $M2 = "01";
 
         //set this year to next
-        if ( $has_Y && $has_M && $day_part >= $D ) {
+        if ( $has_Y && $day_part <= $D && ( $has_M || $month_part != '12' ) ) {
+            $M = $M1 = "01";
             $Y = $Y2;
             $Y1 = $Y2;
         }
