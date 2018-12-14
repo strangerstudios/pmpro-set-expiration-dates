@@ -21,6 +21,10 @@ This plugin requires Paid Memberships Pro to function.
 1. Change the expiration date on the edit levels and edit discount code pages.
 
 == Changelog ==
+= .4.1 =
+* BUG FIX: Better handling of Y1 and M1. A date like Y1-12-31 no longer is pushed out to next year.
+* ENHANCEMENT: Created a test file here (https://gist.github.com/ideadude/f94f4440ab109fe894a4a45bd9b64734) to make sure future updates don't break functionality for date formats.
+
 = .4 =
 * BUG FIX/ENHANCEMENT: Accepting Y1 and M1 in addition to Y and M in dates.
 
