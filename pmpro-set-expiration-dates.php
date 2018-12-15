@@ -62,8 +62,8 @@ function pmprosed_fixDate($set_expiration_date)
     $has_Y = (strpos($set_expiration_date, "Y") !== false);
 
     $date_parts = explode( '-', $set_expiration_date );
-    $day_part = $date_parts[count($date_parts) - 1];
-    $month_part = $date_parts[count($date_parts) - 2];
+    $day_part = (int)$date_parts[count($date_parts) - 1];
+	$month_part = (int)$date_parts[count($date_parts) - 2];
 
     $now = current_time( 'timestamp' );
     $Y = $Y1 = date("Y", $now );
@@ -76,7 +76,7 @@ function pmprosed_fixDate($set_expiration_date)
         $M2 = "01";
 
         //set this year to next
-        if ( $has_Y && $day_part <= $D && ( $has_M || $month_part != '12' ) ) {
+        if ( $has_Y && $day_part <= (int)$D && ( $has_M || $month_part != '12' ) ) {
             $M = $M1 = "01";
             $Y = $Y2;
             $Y1 = $Y2;
@@ -92,7 +92,7 @@ function pmprosed_fixDate($set_expiration_date)
     $new_expiration_date = str_replace($searches, $replacements, $set_expiration_date);
 
     //make sure we don't set expiration dates in the past
-    if ($new_expiration_date <= date('Y-m-d', current_time('timestamp'))) {
+    if ( $new_expiration_date <= date('Y-m-d', $now ) ) {
         if ($has_M) {
             $new_expiration_date = str_replace("M-", "M2-", $set_expiration_date);
             $new_expiration_date = str_replace("M1-", "M2-", $set_expiration_date);
