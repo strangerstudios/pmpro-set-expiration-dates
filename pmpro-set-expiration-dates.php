@@ -4,7 +4,7 @@
 Plugin Name: Paid Memberships Pro - Set Expiration Dates Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
 Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code.
-Version: .4.1
+Version: .4.2
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
