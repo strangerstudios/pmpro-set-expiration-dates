@@ -107,7 +107,7 @@ function pmprosed_fixDate($set_date, $current_date = null)
             if($temp_m == 13) {
                 $temp_m = 1;
                 $temp_y++;
-                $add_years = min($add_years--, 0);
+                $add_years--;
             }
         }
     }
