@@ -3,8 +3,8 @@
 /*
 Plugin Name: Paid Memberships Pro - Set Expiration Dates Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
-Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code. 
-Version: .4.1
+Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code.
+Version: .4.2
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -52,65 +52,90 @@ add_action("pmpro_save_membership_level", "pmprosed_pmpro_save_membership_level"
 /*
 	Function to replace Y and M/etc with actual dates
 */
-function pmprosed_fixDate($set_expiration_date)
+function pmprosed_fixDate($set_date, $current_date = null)
 {
     // handle lower-cased y/m values.
-    $set_expiration_date = strtoupper($set_expiration_date);
+    $set_date = strtoupper($set_date);
 
-    //vars to tell us which placeholders are being used
-    $has_M = (strpos($set_expiration_date, "M") !== false);
-    $has_Y = (strpos($set_expiration_date, "Y") !== false);
+    // Change "M-" and "Y-" to "M1-" and "Y1-".
+    $set_date = preg_replace('/Y-/', 'Y1-', $set_date);
+    $set_date = preg_replace('/M-/', 'M1-', $set_date);
 
-    $date_parts = explode( '-', $set_expiration_date );
-    $day_part = (int)$date_parts[count($date_parts) - 1];
-	$month_part = (int)$date_parts[count($date_parts) - 2];
+    // Get number of months and years to add.
+    $m_pos = stripos( $set_date, 'M' );
+    $y_pos = stripos( $set_date, 'Y' );
+    if($m_pos !== false) {
+        $add_months = intval($set_date[$m_pos + 1]);
+    }
+    if($y_pos !== false) {
+        $add_years = intval($set_date[$y_pos + 1]);
+    }
 
-    $now = current_time( 'timestamp' );
-    $Y = $Y1 = date("Y", $now );
-    $Y2 = intval($Y) + 1;
-    $M = $M1 = date("m", $now );
-    $D = $D1 = date("j", $now );
-    
-    if ( $M == 12 ) {
-        //set to Jan
-        $M2 = "01";
+    // Allow new dates to be set from a custom date.
+    if(empty($current_date)) $current_date = current_time( 'timestamp' );
 
-        //set this year to next
-        if ( $has_Y && $day_part <= (int)$D && ( $has_M || $month_part != '12' ) ) {
-            $M = $M1 = "01";
-            $Y = $Y2;
-            $Y1 = $Y2;
+    // Get current date parts.
+    $current_y = intval(date('Y', $current_date));
+    $current_m = intval(date('m', $current_date));
+    $current_d = intval(date('d', $current_date));
+
+    // Get set date parts.
+    $date_parts = explode( '-', $set_date);
+    $set_y = intval($date_parts[0]);
+    $set_m = intval($date_parts[1]);
+    $set_d = intval($date_parts[2]);
+
+    // Get temporary date parts.
+    $temp_y = $set_y > 0 ? $set_y : $current_y;
+    $temp_m = $set_m > 0 ? $set_m : $current_m;
+    $temp_d = $set_d;
+
+    // Add months.
+    if(!empty($add_months)) {
+        for($i = 0; $i < $add_months; $i++) {
+            // If "M1", only add months if current date of month has already passed.
+            if(0 == $i) {
+                if($temp_d < $current_d) {
+                    $temp_m++;
+                    $add_months--;
+                }
+            } else {
+                $temp_m++;
+            }
+
+            // If we hit 13, reset to Jan of next year and subtract one of the years to add.
+            if($temp_m == 13) {
+                $temp_m = 1;
+                $temp_y++;
+                $add_years--;
+            }
         }
-    } else {
-        $M2 = str_pad(intval($M) + 1, 2, "0", STR_PAD_LEFT);
     }
-    
-    $searches = array("Y-", "Y1-", "Y2-", "M-", "M1-", "M2-");
-    $replacements = array($Y . "-", $Y1 . "-", $Y2 . "-", $M . "-", $M1 . "-", $M2 . "-");
 
-    //note I changed the var name here
-    $new_expiration_date = str_replace($searches, $replacements, $set_expiration_date);
-
-    //make sure we don't set expiration dates in the past
-    if ( $new_expiration_date <= date('Y-m-d', $now ) ) {
-        if ($has_M) {
-            $new_expiration_date = str_replace("M-", "M2-", $set_expiration_date);
-            $new_expiration_date = str_replace("M1-", "M2-", $set_expiration_date);
-        } else {
-            $new_expiration_date = str_replace("Y-", "Y2-", $set_expiration_date);  //assume has_Y
-            $new_expiration_date = str_replace("Y1-", "Y2-", $set_expiration_date);  //assume has_Y
+    // Add years.
+    if(!empty($add_years)) {
+        for($i = 0; $i < $add_years; $i++) {
+            // If "Y1", only add years if current date has already passed.
+            if(0 == $i) {
+                $temp_date = strtotime(date("{$temp_y}-{$temp_m}-{$temp_d}"));
+                if($temp_date < $current_date) {
+                    $temp_y++;
+                    $add_years--;
+                }
+            } else {
+                $temp_y++;
+            }
         }
-
-        $new_expiration_date = str_replace($searches, $replacements, $new_expiration_date);
     }
 
-    //make sure we use the right day of the month for dates > 28
-    $dotm = pmpro_getMatches('/\-([0-3][0-9]$)/', $new_expiration_date, true);
-    if (intval($dotm) > 28) {
-        $new_expiration_date = date('Y-m-t', strtotime(substr($new_expiration_date, 0, 8) . "01"));
-    }
+    // Pad dates if necessary.
+    $temp_m = str_pad($temp_m, 2, '0', STR_PAD_LEFT);
+    $temp_d = str_pad($temp_d, 2, '0', STR_PAD_LEFT);
 
-    return $new_expiration_date;
+    // Put it all together.
+    $set_date = date("{$temp_y}-{$temp_m}-{$temp_d}");
+
+    return $set_date;
 }
 
 /*
@@ -183,7 +208,7 @@ add_filter("pmpro_checkout_level", "pmprosed_pmpro_checkout_level");
 add_filter('pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2);
 add_filter('pmpro_ipnhandler_level', 'pmprosed_pmpro_checkout_level');
 
-/*	
+/*
 	This function will save a the set expiration dates into wp_options.
 */
 function pmpro_saveSetExpirationDate($level_id, $set_expiration_date, $code_id = NULL)
@@ -261,11 +286,11 @@ Function to add links to the plugin row meta
 function pmprosed_plugin_row_meta($links, $file)
 {
     if (strpos($file, 'pmpro-set-expiration-dates.php') !== false) {
-        $new_links = array(
+        $set_links = array(
             '<a href="' . esc_url('http://www.paidmembershipspro.com/add-ons/plugins-on-github/pmpro-expiration-date/') . '" title="' . esc_attr(__('View Documentation', 'pmpro')) . '">' . __('Docs', 'pmpro') . '</a>',
             '<a href="' . esc_url('http://paidmembershipspro.com/support/') . '" title="' . esc_attr(__('Visit Customer Support Forum', 'pmpro')) . '">' . __('Support', 'pmpro') . '</a>',
         );
-        $links = array_merge($links, $new_links);
+        $links = array_merge($links, $set_links);
     }
     return $links;
 }
