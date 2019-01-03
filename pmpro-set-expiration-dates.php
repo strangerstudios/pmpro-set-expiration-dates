@@ -4,7 +4,7 @@
 Plugin Name: Paid Memberships Pro - Set Expiration Dates Add On
 Plugin URI: http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/
 Description: Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code.
-Version: .4.2
+Version: .4.3
 Author: Stranger Studios
 Author URI: http://www.strangerstudios.com
 */
@@ -127,13 +127,19 @@ function pmprosed_fixDate($set_date, $current_date = null)
             }
         }
     }
-
+    
     // Pad dates if necessary.
     $temp_m = str_pad($temp_m, 2, '0', STR_PAD_LEFT);
     $temp_d = str_pad($temp_d, 2, '0', STR_PAD_LEFT);
 
     // Put it all together.
-    $set_date = date("{$temp_y}-{$temp_m}-{$temp_d}");
+    $set_date = date( "{$temp_y}-{$temp_m}-{$temp_d}" );
+
+    // Make sure we use the right day of the month for dates > 28
+    $dotm = pmpro_getMatches('/\-([0-3][0-9]$)/', $set_date, true);
+    if (intval($dotm) > 28) {
+        $set_date = date('Y-m-t', strtotime(substr($set_date, 0, 8) . "01"));
+    }
 
     return $set_date;
 }
