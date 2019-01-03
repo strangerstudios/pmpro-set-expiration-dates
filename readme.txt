@@ -24,7 +24,6 @@ This plugin requires Paid Memberships Pro to function.
 
 = .4.2 =
 * BUG FIX: Fixed bug where some dates were not correctly pushed to next month.
-* BUG FIX: Fixed warning RE argument count to pmprosed_pmpro_checkout_level.
 * ENHANCEMENT: Added ability to pass a date to pmprosed_fixDate() to set expiration dates from instead of using current date.
 
 = .4.1 =
