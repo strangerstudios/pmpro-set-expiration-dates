@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Paid Memberships Pro - Set Expiration Dates Add On\n"
-"POT-Creation-Date: 2019-06-19 17:59+0200\n"
+"POT-Creation-Date: 2019-06-20 14:07+0200\n"
 "PO-Revision-Date: 2019-06-16 08:54+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -25,47 +25,55 @@ msgstr ""
 msgid "Set Expiration Date"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:34
-#, php-format
+#: pmpro-set-expiration-dates.php:33
 msgid ""
 "To have this level expire on a specific date, enter it below in YYYY-MM-DD "
-"format. %1$sNote:%2$s You must also set an expiration date above (e.g. 1 "
-"Year) which will be overwritten by the value below."
+"format"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:41 pmpro-set-expiration-dates.php:274
+#: pmpro-set-expiration-dates.php:33
+msgid "Note:"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:33
+msgid ""
+"You must also set an expiration date above (e.g. 1 Year) which will be "
+"overwritten by the value below."
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:37 pmpro-set-expiration-dates.php:270
 msgid "Expiration Date"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:45
+#: pmpro-set-expiration-dates.php:41
 msgid ""
 "YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 "
 "for current/next month."
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:278
+#: pmpro-set-expiration-dates.php:274
 msgid ""
 "YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 "
 "for current/next month. Be sure to set an expiration date above as well."
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:310
+#: pmpro-set-expiration-dates.php:306
 msgid "View Documentation"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:310
+#: pmpro-set-expiration-dates.php:306
 msgid "Docs"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:311
+#: pmpro-set-expiration-dates.php:307
 msgid "Visit Customer Support Forum"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:311
+#: pmpro-set-expiration-dates.php:307
 msgid "Support"
 msgstr ""
 
-#: pmpro-set-expiration-dates.php:328
+#: pmpro-set-expiration-dates.php:324
 msgid "Membership expires on"
 msgstr ""
 
