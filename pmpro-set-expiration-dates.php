@@ -15,7 +15,7 @@ Domain Path: /languages
 function pmprosed_load_plugin_text_domain() {
 	load_plugin_textdomain( 'pmpro-set-expiration-dates', false, basename( dirname( __FILE__ ) ) . '/languages' ); 
 }
-add_action( 'plugins_loaded', 'pmprosed_load_plugin_text_domain' ); 
+add_action( 'init', 'pmprosed_load_plugin_text_domain' ); 
 
 /*
 	This first set of functions adds our fields to the edit membership levels page
