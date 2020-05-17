@@ -11,7 +11,23 @@ Author URI: http://www.strangerstudios.com
 
 /*
 	This first set of functions adds our fields to the edit membership levels page
-*/
+ */
+function pmpro_set_expiration_date_load_textdomain()
+{
+        //get the locale
+
+        $locale = apply_filters("plugin_locale", get_locale(), "pmpro-set-expiration-dates");
+        $mofile = "pmpro-set-expiration-dates-" . $locale . ".mo";
+
+        //paths to local (plugin) and global (WP) language files
+        $mofile_local  = dirname(__FILE__)."/languages/" . $mofile;
+
+        //load local second
+        load_textdomain("pmpro-set-expiration-dates", $mofile_local);
+
+}
+add_action("init", "pmpro_set_expiration_date_load_textdomain");
+
 //add level cost text field to level price settings
 function pmprosed_pmpro_membership_level_after_other_settings()
 {
@@ -21,18 +37,18 @@ function pmprosed_pmpro_membership_level_after_other_settings()
     else
         $set_expiration_date = "";
     ?>
-    <h3 class="topborder">Set Expiration Date</h3>
-    <p>To have this level expire on a specific date, enter it below in YYYY-MM-DD format. <strong>Note:</strong> You
-        must also set an expiration date above (e.g. 1 Year) which will be overwritten by the value below.</p>
+	    <h3 class="topborder"><?= __('Set Expiration Date','pmpro-set-expiration-dates') ?></h3>
+	    <p><?= __('To have this level expire on a specific date, enter it below in YYYY-MM-DD format. <strong>Note:</strong> You
+	    must also set an expiration date above (e.g. 1 Year) which will be overwritten by the value below.','pmpro-set-expiration-dates') ?></p>
     <table>
         <tbody class="form-table">
         <tr>
-            <th scope="row" valign="top"><label for="set_expiration_date">Expiration Date:</label></th>
+	<th scope="row" valign="top"><label for="set_expiration_date"><?= __('Expiration Date:','pmpro-set-expiration-dates') ?></label></th>
             <td>
                 <input type="text" name="set_expiration_date" value="<?php echo esc_attr($set_expiration_date); ?>"/>
                 <br/>
-                <small>YYYY-MM-DD format. Enter "Y" for current year, "Y2" for next year. M, M2 for current/next
-                    month.
+		<small><?= __('YYYY-MM-DD format. Enter "Y" for current year, "Y2" for next year. M, M2 for current/next
+		month.','pmpro-set-expiration-dates') ?>
                 </small>
             </td>
         </tr>
@@ -187,7 +203,7 @@ function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
 
             //update number and period
             $level->expiration_number = $days_left;
-            $level->expiration_period = "Day";
+            $level->expiration_period = __("Day",'pmpro-set-expiration-dates');
 
             return $level;    //stop
         } elseif (!empty($used_y)) {
@@ -202,7 +218,7 @@ function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
 
             //update number and period
             $level->expiration_number = $days_left;
-            $level->expiration_period = "Day";
+            $level->expiration_period = __("Day",'pmpro-set-expiration-dates');
 
             return $level; //stop
         } else {
@@ -261,12 +277,12 @@ function pmprosed_pmpro_discount_code_after_level_settings($code_id, $level)
         <tr>
             <td>
         <tr>
-            <th scope="row" valign="top"><label for="set_expiration_date">Expiration Date:</label></th>
+	<th scope="row" valign="top"><label for="set_expiration_date"><?= __('Expiration Date:','pmpro-set-expiration-dates') ?></label></th>
             <td>
                 <input type="text" name="set_expiration_date[]" value="<?php echo esc_attr($set_expiration_date); ?>"/>
                 <br/>
-                <small>YYYY-MM-DD format. Enter "Y" for current year, "Y2" for next year. M, M2 for current/next month.
-                    Be sure to set an expiration date above as well.
+		<small><?= __('YYYY-MM-DD format. Enter "Y" for current year, "Y2" for next year. M, M2 for current/next month.
+		Be sure to set an expiration date above as well.','pmpro-set-expiration-dates') ?>
                 </small>
             </td>
         </tr>
@@ -316,7 +332,7 @@ function pmprosed_pmpro_level_expiration_text($expiration_text, $level)
 
     if (!empty($set_expiration_date)) {
         $set_expiration_date = pmprosed_fixDate($set_expiration_date);
-        $expiration_text = "Membership expires on " . date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) . ".";
+        $expiration_text = __("Membership expires on ",'pmpro-set-expiration-dates') . date(get_option('date_format'), strtotime($set_expiration_date, current_time('timestamp'))) . ".";
     }
 
     return $expiration_text;
