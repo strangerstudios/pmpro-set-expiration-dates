@@ -1,0 +1,100 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Paid Memberships Pro - Set Expiration Dates Add On\n"
+"POT-Creation-Date: 2019-06-20 14:07+0200\n"
+"PO-Revision-Date: 2019-06-16 08:54+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: pmpro-set-expiration-dates.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: pmpro-set-expiration-dates.php:32
+msgid "Set Expiration Date"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:33
+msgid ""
+"To have this level expire on a specific date, enter it below in YYYY-MM-DD "
+"format"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:33
+msgid "Note:"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:33
+msgid ""
+"You must also set an expiration date above (e.g. 1 Year) which will be "
+"overwritten by the value below."
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:37 pmpro-set-expiration-dates.php:270
+msgid "Expiration Date"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:41
+msgid ""
+"YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 "
+"for current/next month."
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:274
+msgid ""
+"YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 "
+"for current/next month. Be sure to set an expiration date above as well."
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:306
+msgid "View Documentation"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:306
+msgid "Docs"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:307
+msgid "Visit Customer Support Forum"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:307
+msgid "Support"
+msgstr ""
+
+#: pmpro-set-expiration-dates.php:324
+msgid "Membership expires on"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Paid Memberships Pro - Set Expiration Dates Add On"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership "
+"level or discount code."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Stranger Studios"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.strangerstudios.com"
+msgstr ""
