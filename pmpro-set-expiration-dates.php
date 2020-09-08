@@ -230,7 +230,7 @@ function pmpro_saveSetExpirationDate($level_id, $set_expiration_date, $code_id =
         $key = "pmprosed_" . $level_id;
     }
 
-    update_option($key, $set_expiration_date);
+    update_option( $key, $set_expiration_date, false );
 }
 
 /*
