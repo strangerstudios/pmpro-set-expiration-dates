@@ -317,7 +317,7 @@ add_filter('plugin_row_meta', 'pmprosed_plugin_row_meta', 10, 2);
 */
 function pmprosed_pmpro_level_expiration_text($expiration_text, $level)
 {
-    $set_expiration_date = pmpro_getSetExpirationDate($level->id);
+    $set_expiration_date = !empty( $level ) ? pmpro_getSetExpirationDate($level->id) : null;
 
     if (!empty($set_expiration_date)) {
         $set_expiration_date = pmprosed_fixDate($set_expiration_date);
