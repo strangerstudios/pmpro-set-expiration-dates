@@ -223,6 +223,14 @@ function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
 }
 add_filter("pmpro_checkout_level", "pmprosed_pmpro_checkout_level");
 add_filter('pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2);
+
+/**
+ * Wrapper function for pmpro_ipnhandler_level to ensure that the right arguments are passed through.
+ * @since 0.6
+ */
+function pmprosed_pmpro_ipnhandler_level( $level, $user_id = null) {
+    return pmprosed_pmpro_checkout_level( $level_id, null );
+}
 add_filter('pmpro_ipnhandler_level', 'pmprosed_pmpro_checkout_level');
 
 /*
