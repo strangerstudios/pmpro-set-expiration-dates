@@ -231,7 +231,7 @@ add_filter('pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2);
 function pmprosed_pmpro_ipnhandler_level( $level, $user_id = null) {
     return pmprosed_pmpro_checkout_level( $level_id, null );
 }
-add_filter('pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level');
+add_filter( 'pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 
 /*
 	This function will save a the set expiration dates into wp_options.
