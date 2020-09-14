@@ -1,0 +1,115 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Paid Memberships Pro - Set Expiration Dates Add On\n"
+"POT-Creation-Date: 2020-09-15 00:24+0200\n"
+"PO-Revision-Date: 2020-09-15 00:24+0200\n"
+"Last-Translator: Alfonso Sánchez Uzábal <skotperez@voragine.net>\n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: pmpro-set-expiration-dates.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: pmpro-set-expiration-dates.php:32 pmpro-set-expiration-dates.php:312
+msgid "Set Expiration Date"
+msgstr "Fixer la date d'échéance"
+
+#: pmpro-set-expiration-dates.php:33
+msgid ""
+"To have this level expire on a specific date, enter it below in YYYY-MM-DD "
+"format"
+msgstr ""
+"Pour que ce niveau expire à une date précise, saisissez-le ci-dessous au "
+"format AAAA-MM-JJ"
+
+#: pmpro-set-expiration-dates.php:33
+msgid "Note:"
+msgstr "Note :"
+
+#: pmpro-set-expiration-dates.php:33
+msgid ""
+"You must also set an expiration date above (e.g. 1 Year) which will be "
+"overwritten by the value below."
+msgstr ""
+"Vous devez également fixer une date d'expiration au-dessus (par exemple 1 "
+"an) qui sera remplacée par la valeur ci-dessous."
+
+#: pmpro-set-expiration-dates.php:37 pmpro-set-expiration-dates.php:278
+msgid "Expiration Date"
+msgstr "Date d'échéance"
+
+#: pmpro-set-expiration-dates.php:41
+msgid ""
+"YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 "
+"for current/next month."
+msgstr ""
+"Format AAAA-MM-JJ. Entrez \"Y\" pour l'année en cours, \"Y2\" pour l'année "
+"prochaine. M, M2 pour le mois en cours/suivant."
+
+#: pmpro-set-expiration-dates.php:282
+msgid ""
+"YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 "
+"for current/next month. Be sure to set an expiration date above as well."
+msgstr ""
+"Format AAAA-MM-JJ. Saisissez \"Y\" pour l'année en cours, \"Y2\" pour "
+"l'année prochaine. M, M2 pour le mois en cours/le mois suivant. Pensez à "
+"fixer également une date d'échéance ci-dessus."
+
+#: pmpro-set-expiration-dates.php:358
+#, php-format
+msgid ""
+"Warning: The following level(s) have a past expiration date: <strong>ID's - "
+"%s</strong>."
+msgstr ""
+"Attention : Le(s) niveau(x) suivant(s) ont une date d'expiration passée : "
+"<strong>ID's - %s</strong>."
+
+#: pmpro-set-expiration-dates.php:400
+msgid "View Documentation"
+msgstr "Afficher la documentation"
+
+#: pmpro-set-expiration-dates.php:400
+msgid "Docs"
+msgstr "Documentation"
+
+#: pmpro-set-expiration-dates.php:401
+msgid "Visit Customer Support Forum"
+msgstr "Visitez le forum de support client"
+
+#: pmpro-set-expiration-dates.php:401
+msgid "Support"
+msgstr "Support"
+
+#: pmpro-set-expiration-dates.php:418
+msgid "Membership expires on"
+msgstr "L'adhésion se finit le"
+
+#~ msgid "Paid Memberships Pro - Set Expiration Dates Add On"
+#~ msgstr "Paid Memberships Pro - Extension Fixer la date d'échéance"
+
+#~ msgid "http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/"
+#~ msgstr "http://www.paidmembershipspro.com/wp/pmpro-set-expiration-dates/"
+
+#~ msgid ""
+#~ "Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership "
+#~ "level or discount code."
+#~ msgstr ""
+#~ "Fixez une date d'échéance spécifique (par exemple 2013-12-31) pour un "
+#~ "niveau d'adhésion ou un code de réduction."
+
+#~ msgid "Stranger Studios"
+#~ msgstr "Stranger Studios"
+
+#~ msgid "http://www.strangerstudios.com"
+#~ msgstr "http://www.strangerstudios.com"
