@@ -61,7 +61,7 @@ add_action("pmpro_save_membership_level", "pmprosed_pmpro_save_membership_level"
 function pmprosed_fixDate($set_date, $current_date = null)
 {
     // handle lower-cased y/m values.
-    $set_date = strtoupper($set_date);
+    $set_date = apply_filters( 'pmprosed_expiration_date_raw', strtoupper($set_date) );
 
     // Change "M-" and "Y-" to "M1-" and "Y1-".
     $set_date = preg_replace('/Y-/', 'Y1-', $set_date);
@@ -148,7 +148,7 @@ function pmprosed_fixDate($set_date, $current_date = null)
         $set_date = date('Y-m-t', strtotime(substr($set_date, 0, 8) . "01"));
     }
 
-    return $set_date;
+    return apply_filters( 'pmprosed_expiration_date', $set_date );
 }
 
 /*
