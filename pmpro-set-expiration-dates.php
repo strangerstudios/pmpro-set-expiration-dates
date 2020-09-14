@@ -355,7 +355,7 @@ function pmprosed_show_admin_notice_past_dates() {
         $levels = implode(', ', $problem_levels );
 
         $msg = -1;
-        $msgt = sprintf( __( "Warning: The following level(s) have a past expiration date: <strong>ID's - %s</strong>. Please update these levels if you want to offer these levels at checkout.", 'pmpro-set-expiration-dates' ), $levels );
+        $msgt = sprintf( __( "Warning: The following level(s) have a past expiration date: <strong>ID's - %s</strong>.", 'pmpro-set-expiration-dates' ), $levels );
     }
 }
 if ( isset( $_REQUEST['page'] ) && 'pmpro-membershiplevels' == $_REQUEST['page'] && ! isset( $_REQUEST['edit'] ) ) {
