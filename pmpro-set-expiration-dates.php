@@ -304,6 +304,92 @@ function pmprosed_pmpro_save_discount_code_level($code_id, $level_id)
 }
 add_action("pmpro_save_discount_code_level", "pmprosed_pmpro_save_discount_code_level", 10, 2);
 
+/**
+ * Show Set Expiration Dates on the level's list table.
+ * @since 0.6
+ */
+function pmprosed_membership_levels_table_extra_cols_header( $levels ) {
+    echo "<th>" . esc_html__( 'Set Expiration Date', 'pmpro-set-expiration-dates' ). "</th>";
+}
+add_action( 'pmpro_membership_levels_table_extra_cols_header', 'pmprosed_membership_levels_table_extra_cols_header', 15, 1 );
+
+/**
+ * Show expiration date setting on levels list table.
+ * @since 0.6
+ */
+function pmprosed_membership_levels_table_extra_cols_body( $levels ) {
+
+    $expiration_date = pmpro_getSetExpirationDate( $levels->id, '' );
+
+    if ( ! empty( $expiration_date ) ) {
+        echo '<td>' . esc_html( $expiration_date ) . '</td>';
+    } else {
+        echo '<td>--</td>';
+    }
+   
+}
+add_action( 'pmpro_membership_levels_table_extra_cols_body', 'pmprosed_membership_levels_table_extra_cols_body', 15, 1 );
+
+/** 
+ * Function to check if any levels have a past date and show a warning.
+ * @since 0.6
+ */
+function pmprosed_show_admin_notice_past_dates() {
+    global $msg, $msgt;
+
+    // get all levels
+    $levels = pmpro_getAllLevels(true,false);
+
+    $is_past = false;
+    $problem_levels = array();
+    foreach( $levels as $level ) {
+       if ( $level->allow_signups && pmprosed_is_past_date( $level->id ) ) {
+           $is_past = true;
+           $problem_levels[$level->id] = $level->id;
+       }
+    }
+
+    // Get all levels and their dates.
+    if ( $is_past ) {
+
+        $levels = implode(', ', $problem_levels );
+
+        $msg = -1;
+        $msgt = sprintf( __( "Warning: The following level(s) have a past expiration date: <strong>ID's - %s</strong>. Please update these levels if you want to offer these levels at checkout.", 'pmpro-set-expiration-dates' ), $levels );
+    }
+}
+if ( isset( $_REQUEST['page'] ) && 'pmpro-membershiplevels' == $_REQUEST['page'] && ! isset( $_REQUEST['edit'] ) ) {
+    add_action( 'admin_notices', 'pmprosed_show_admin_notice_past_dates' );
+}
+
+/**
+ * Get to see if a level's date is in the past
+ * @return bool if the date is in the past or not.
+ * @since 0.6
+ */
+function pmprosed_is_past_date( $level_id ) {
+
+    // Convert the date from level
+    $levels_date = pmpro_getSetExpirationDate( $level_id );
+
+    // if there's no expiration date just bail.
+    if ( empty( $levels_date ) ) {
+        return false;
+    }
+
+    $r = false;
+
+    $today = date('Y-m-d');
+    $levels_date = pmprosed_fixDate( $levels_date );
+
+    if ( $levels_date < $today ) {
+        $r = true;
+    }
+
+    return $r;
+
+}
+
 /*
 Function to add links to the plugin row meta
 */
