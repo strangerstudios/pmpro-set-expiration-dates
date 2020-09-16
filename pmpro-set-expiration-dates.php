@@ -46,7 +46,7 @@ function pmprosed_pmpro_membership_level_after_other_settings()
     </table>
     <?php
 }
-add_action("pmpro_membership_level_after_other_settings", "pmprosed_pmpro_membership_level_after_other_settings");
+add_action( 'pmpro_membership_level_after_other_settings', 'pmprosed_pmpro_membership_level_after_other_settings', 1 );
 
 //save level cost text when the level is saved/added
 function pmprosed_pmpro_save_membership_level($level_id)
