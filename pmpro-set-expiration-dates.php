@@ -335,8 +335,6 @@ add_action( 'pmpro_membership_levels_table_extra_cols_body', 'pmprosed_membershi
  * @since 0.6
  */
 function pmprosed_show_admin_notice_past_dates() {
-    global $msg, $msgt;
-
     // get all levels
     $levels = pmpro_getAllLevels(true,false);
 
@@ -345,17 +343,20 @@ function pmprosed_show_admin_notice_past_dates() {
     foreach( $levels as $level ) {
        if ( $level->allow_signups && pmprosed_is_past_date( $level->id ) ) {
            $is_past = true;
-           $problem_levels[$level->id] = $level->id;
+           $problem_levels[$level->id] = '<a href="' . add_query_arg( array( 'page' => 'pmpro-membershiplevels', 'edit' => $level->id ), admin_url( 'admin.php' ) ) . '">' . $level->name . '</a>';
        }
     }
 
     // Get all levels and their dates.
     if ( $is_past ) {
 
-        $levels = implode(', ', $problem_levels );
-
-        $msg = -1;
-        $msgt = sprintf( __( "Warning: The following level(s) have a past expiration date: <strong>ID's - %s</strong>.", 'pmpro-set-expiration-dates' ), $levels );
+        $levels = implode(', ', $problem_levels ); ?>
+		<div class="notice notice-warning">
+			<p><?php
+				echo sprintf(__( '<strong>Warning:</strong> The following membership levels have an expiration date that is in the past: %s.', 'pmpro-set-expiration-dates' ), $levels );
+			?></p>
+		</div>
+		<?php
     }
 }
 if ( isset( $_REQUEST['page'] ) && 'pmpro-membershiplevels' == $_REQUEST['page'] && ! isset( $_REQUEST['edit'] ) ) {
