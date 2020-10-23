@@ -229,7 +229,7 @@ add_filter('pmpro_discount_code_level', 'pmprosed_pmpro_checkout_level', 10, 2);
  * @since 0.6
  */
 function pmprosed_pmpro_ipnhandler_level( $level, $user_id = null) {
-    return pmprosed_pmpro_checkout_level( $level_id, null );
+    return pmprosed_pmpro_checkout_level( $level, null );
 }
 add_filter( 'pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 
