@@ -27,6 +27,10 @@ This expiration date will override any expiration period set on the level.
 1. Change the expiration date on the edit levels and edit discount code pages.
 
 == Changelog ==
+= TBD - YYYY-MM-DD =
+* ENHANCEMENT: Support PayFast payment gateway.
+* ENHANCEMENT: Applied WordPress Coding Standards to code (improves readability).
+
 = 0.6.1 - 2020-01-19 =
 * BUG FIX: Fixed issue where expiration dates might not apply accurately when using PayPal Standard.
 
