@@ -232,6 +232,8 @@ function pmprosed_pmpro_ipnhandler_level( $level, $user_id = null ) {
 	return pmprosed_pmpro_checkout_level( $level, null );
 }
 add_filter( 'pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
+add_filter( 'pmpro_payfast_itnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
+
 
 /*
 	This function will save a the set expiration dates into wp_options.
