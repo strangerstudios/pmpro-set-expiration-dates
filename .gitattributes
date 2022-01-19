@@ -1,3 +1,4 @@
 .github export-ignore
+.gitattributes export-ignore
 README.md export-ignore
 set-expiration-date-banner.jpg export-ignore
