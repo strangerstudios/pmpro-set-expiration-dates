@@ -185,7 +185,7 @@ function pmprosed_pmpro_checkout_level($level, $discount_code_id = null)
         $set_expiration_date = pmprosed_fixDate($set_expiration_date);
 
         //how many days until expiration
-        $todays_date = time();
+        $todays_date = current_time( 'timestamp' );
         $time_left = strtotime($set_expiration_date) - $todays_date;
         if ($time_left > 0) {
             $days_left = ceil($time_left / (60 * 60 * 24));
