@@ -211,9 +211,8 @@ function pmprosed_pmpro_checkout_level( $level, $discount_code_id = null ) {
 
 			return $level; // stop
 		} else {
-			// expiration already here, don't let people signup
-			$level = null;
-
+			// Expiration in the past. We stop them from checking out elsewhere.
+			pmpro_setMessage( __( "You can't checkout for a level with an expiration date in the past. Please contact the site owner.", 'pmpro-set-expiration-dates' ), 'pmpro_error' );
 			return $level; // stop
 		}
 	}
@@ -233,7 +232,6 @@ function pmprosed_pmpro_ipnhandler_level( $level, $user_id = null ) {
 }
 add_filter( 'pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 add_filter( 'pmpro_payfast_itnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
-
 
 /*
 	This function will save a the set expiration dates into wp_options.
@@ -260,7 +258,6 @@ function pmpro_getSetExpirationDate( $level_id, $code_id = null ) {
 
 	return get_option( $key, '' );
 }
-
 
 /*
 	This next set of functions adds our field to the edit discount code page
@@ -431,3 +428,18 @@ function pmprosed_pmpro_level_expiration_text( $expiration_text, $level ) {
 	return $expiration_text;
 }
 add_filter( 'pmpro_level_expiration_text', 'pmprosed_pmpro_level_expiration_text', 10, 2 );
+
+/**
+ * Don't let folks checkout if the expiration is in the past.
+ * The error is generated elsewhere.
+ */
+function pmprosed_pmpro_registration_checks( $continue ) {
+	global $pmpro_level;
+	
+	if ( pmprosed_is_past_date( $pmpro_level->id ) ) {
+		$continue = false;		
+	}
+	
+	return $continue;
+}
+add_filter( 'pmpro_registration_checks', 'pmprosed_pmpro_registration_checks' );
