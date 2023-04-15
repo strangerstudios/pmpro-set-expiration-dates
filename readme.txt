@@ -2,7 +2,7 @@
 Contributors: strangerstudios
 Tags: paid memberships pro, pmpro, memberships, ecommerce, expiration
 Requires at least: 3.5
-Tested up to: 5.6
+Tested up to: 6.2
 Stable tag: 0.6.1
 
 Set a specific expiration date (e.g. 2013-12-31) for a PMPro membership level or discount code in YYYY-MM-DD format.
