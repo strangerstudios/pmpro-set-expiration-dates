@@ -28,7 +28,7 @@ function pmprosed_pmpro_membership_level_after_other_settings() {
 		$set_expiration_date = '';
 	}
 	?>
-	<h3 class="topborder"><?php esc_html_e( 'Set Expiration Date', 'pmpro-set-expiration-dates' ); ?></h3>
+	<h2 class="topborder"><?php esc_html_e( 'Set Expiration Date', 'pmpro-set-expiration-dates' ); ?></h2>
 	<p><?php _e( 'To have this level expire on a specific date, enter it below in YYYY-MM-DD format', 'pmpro-set-expiration-dates' ); ?>. <strong><?php _e( 'Note:', 'pmpro-set-expiration-dates' ); ?></strong> <?php _e( 'You must also set an expiration date above (e.g. 1 Year) which will be overwritten by the value below.', 'pmpro-set-expiration-dates' ); ?></p>
 	<table>
 		<tbody class="form-table">
