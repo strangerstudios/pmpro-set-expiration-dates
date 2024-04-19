@@ -233,6 +233,7 @@ function pmprosed_pmpro_ipnhandler_level( $level, $user_id = null ) {
 }
 add_filter( 'pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 add_filter( 'pmpro_payfast_itnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
+add_filter( 'pmpro_paystack_webhook_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 
 
 /*
