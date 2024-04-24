@@ -439,7 +439,7 @@ function pmprosed_pmpro_level_expiration_text( $expiration_text, $level ) {
     if ( ! empty( $discount_code ) ) {
         $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id, $discount_code->id ) : null;
     } else {
-        $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id,  ) : null;
+        $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id ) : null;
     }
     
 	if ( ! empty( $set_expiration_date ) ) {
