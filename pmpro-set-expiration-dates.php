@@ -436,7 +436,7 @@ function pmprosed_pmpro_level_expiration_text( $expiration_text, $level ) {
     }
 
     // Get the set_expiration_date for either the level ID or discount code if that is set?
-    if ( ! empty( $discount_code ) ) {
+    if ( ! empty( $discount_code->id ) ) {
         $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id, $discount_code->id ) : null;
     } else {
         $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id ) : null;
