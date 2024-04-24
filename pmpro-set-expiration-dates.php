@@ -19,8 +19,10 @@ add_action( 'init', 'pmprosed_load_plugin_text_domain' );
 /*
 	This first set of functions adds our fields to the edit membership levels page
 */
-// add level cost text field to level price settings
-function pmprosed_pmpro_membership_level_after_other_settings() {
+/**
+ * Add Set Expiration Date settings to the Expirations tab of the edit level settings.
+ */
+function pmprosed_pmpro_membership_level_after_expiration_settings() {
 	$level_id = intval( $_REQUEST['edit'] );
 	if ( $level_id > 0 ) {
 		$set_expiration_date = pmpro_getSetExpirationDate( $level_id );
@@ -45,7 +47,7 @@ function pmprosed_pmpro_membership_level_after_other_settings() {
 	</table>
 	<?php
 }
-add_action( 'pmpro_membership_level_after_other_settings', 'pmprosed_pmpro_membership_level_after_other_settings', 1 );
+add_action( 'pmpro_membership_level_after_expiration_settings', 'pmprosed_pmpro_membership_level_after_expiration_settings', 1 );
 
 // save level cost text when the level is saved/added
 function pmprosed_pmpro_save_membership_level( $level_id ) {
