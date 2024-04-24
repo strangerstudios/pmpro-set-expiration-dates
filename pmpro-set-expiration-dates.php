@@ -423,9 +423,25 @@ add_filter( 'plugin_row_meta', 'pmprosed_plugin_row_meta', 10, 2 );
 /*
 	Update expiration text on levels page.
 */
+/*
+	Update expiration text on levels and checkout page.
+*/
 function pmprosed_pmpro_level_expiration_text( $expiration_text, $level ) {
-	 $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id ) : null;
 
+    // See if a discount code was used with the Set Expiration Date.
+    if ( ! empty( $_REQUEST['pmpro_discount_code'] ) ) {
+        $discount_code = new PMPro_Discount_Code($_REQUEST['pmpro_discount_code']);
+    } elseif ( ! empty( $_REQUEST['code'] ) ) {
+        $discount_code = new PMPro_Discount_Code($_REQUEST['code']);
+    }
+
+    // Get the set_expiration_date for either the level ID or discount code if that is set?
+    if ( ! empty( $discount_code ) ) {
+        $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id, $discount_code->id ) : null;
+    } else {
+        $set_expiration_date = ! empty( $level ) ? pmpro_getSetExpirationDate( $level->id,  ) : null;
+    }
+    
 	if ( ! empty( $set_expiration_date ) ) {
 		$set_expiration_date = pmprosed_fixDate( $set_expiration_date );
 		$expiration_text     = esc_html__( 'Membership expires on', 'pmpro-set-expiration-dates' ) . ' ' . date_i18n( get_option( 'date_format' ), strtotime( $set_expiration_date, current_time( 'timestamp' ) ) ) . '.';
