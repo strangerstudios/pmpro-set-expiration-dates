@@ -237,6 +237,32 @@ add_filter( 'pmpro_ipnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 )
 add_filter( 'pmpro_payfast_itnhandler_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 add_filter( 'pmpro_paystack_webhook_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 
+/**
+ * Force the Set Expiration Date to be applied, even if the IPN/webhook/PBC order is processed on a different day.
+ * 
+ * @since TBD
+ */
+function pmprosed_force_set_expiration_enddate( $enddate, $user_id, $level, $startdate ) {
+
+	// Bail if no enddate or a NULL enddate.
+	if ( $enddate === "NULL" || empty( $enddate ) ) {
+		return $enddate;
+	}
+
+	// No level found, bail.
+	if ( empty( $level ) || empty( $level->id ) ) {
+		return $enddate;
+	}
+
+	// Does this level have a set expiration date?
+	$set_expiration_date = pmpro_getSetExpirationDate( $level->id );
+	if ( ! empty( $set_expiration_date ) ) {
+		$enddate = pmprosed_fixDate( $set_expiration_date );
+	}
+
+	return $enddate;
+}
+add_filter( 'pmpro_checkout_end_date', 'pmprosed_force_set_expiration_enddate', 10, 4 );
 
 /*
 	This function will save a the set expiration dates into wp_options.
