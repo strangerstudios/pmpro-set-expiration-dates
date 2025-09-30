@@ -238,7 +238,7 @@ add_filter( 'pmpro_payfast_itnhandler_level', 'pmprosed_pmpro_ipnhandler_level',
 add_filter( 'pmpro_paystack_webhook_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 
 /**
- * Force the Set Expiration Date to be applied, even if the IPN/webhook/PBC order is processed on a different day.
+ * Add support for gateways that may process the order later. Like Pay By Check
  * 
  * @since TBD
  */
@@ -254,8 +254,20 @@ function pmprosed_force_set_expiration_enddate( $enddate, $user_id, $level, $sta
 		return $enddate;
 	}
 
-	// Does this level have a set expiration date?
-	$set_expiration_date = pmpro_getSetExpirationDate( $level->id );
+	// Try to get the discount code ID if one is being used, this is similar to the checkout.php logic.
+	// Using the $discount_code_id global as a fallback for backwards compatibility - this should always be attached to the level object.
+	global $wpdb, $discount_code, $discount_code_id;
+	if ( ! empty( $level->discount_code ) ) {
+		$discount_code = $level->discount_code;
+		$discount_code_id = empty( $level->code_id ) ? $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $discount_code ) . "' LIMIT 1" ) : $level->code_id;
+	} elseif ( ! empty( $discount_code ) && empty( $discount_code_id ) ) {
+		$discount_code_id = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $discount_code ) . "' LIMIT 1" );
+	} else {
+		$discount_code_id = null;
+	}
+
+	// Does this particular level have a set expiration date.
+	$set_expiration_date = pmpro_getSetExpirationDate( $level->id, $discount_code_id );
 	if ( ! empty( $set_expiration_date ) ) {
 		$enddate = pmprosed_fixDate( $set_expiration_date );
 	}
