@@ -238,7 +238,7 @@ add_filter( 'pmpro_payfast_itnhandler_level', 'pmprosed_pmpro_ipnhandler_level',
 add_filter( 'pmpro_paystack_webhook_level', 'pmprosed_pmpro_ipnhandler_level', 10, 2 );
 
 /**
- * Add support for gateways that may process the order later. Like Pay By Check
+ * Add support for gateways that may process the order later (manual payments). Like Pay By Check
  * 
  * @since TBD
  */
@@ -265,9 +265,18 @@ function pmprosed_force_set_expiration_enddate( $enddate, $user_id, $level, $sta
 	if ( ! empty( $level->discount_code ) ) {
 		// Prefer the discount code attached to the level object.
 		$local_discount_code = $level->discount_code;
-		$local_discount_code_id = empty( $level->code_id )
-			? $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $local_discount_code ) . "' LIMIT 1" )
-			: $level->code_id;
+
+		// The discount_code_id logic.
+		if ( empty( $level->code_id ) ) {
+ 			$local_discount_code_id = $wpdb->get_var(
+ 				$wpdb->prepare(
+ 					"SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = %s LIMIT 1",
+ 					$local_discount_code
+ 				)
+ 			);
+ 		} else {
+ 			$local_discount_code_id = $level->code_id;
+ 		}
 	} elseif ( ! empty( $discount_code ) ) {
 		// Fall back to the global discount code, if available.
 		$local_discount_code = $discount_code;
@@ -276,14 +285,30 @@ function pmprosed_force_set_expiration_enddate( $enddate, $user_id, $level, $sta
 			$local_discount_code_id = $discount_code_id;
 		} else {
 			// Otherwise, look up the ID based on the global discount code.
-			$local_discount_code_id = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $local_discount_code ) . "' LIMIT 1" );
+			$local_discount_code_id = $wpdb->get_var(
+ 			$wpdb->prepare(
+ 				"SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = %s LIMIT 1",
+ 				$discount_code
+ 			)
+ 		);
 		}
 	}
 
 	// Does this particular level have a set expiration date.
 	$set_expiration_date = pmpro_getSetExpirationDate( $level->id, $local_discount_code_id );
+
+	// Make sure we got the right timestamp.
+	$startdate_timestamp = null;
+	if ( ! empty( $startdate ) ) {
+		if ( is_numeric( $startdate ) ) {
+			$startdate_timestamp = (int) $startdate;
+		} else {
+			$startdate_timestamp = strtotime( $startdate );
+		}
+	}
+
 	if ( ! empty( $set_expiration_date ) ) {
-		$enddate = pmprosed_fixDate( $set_expiration_date );
+		$enddate = pmprosed_fixDate( $set_expiration_date, $startdate_timestamp );
 	}
 
 	return $enddate;
