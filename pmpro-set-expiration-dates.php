@@ -257,17 +257,31 @@ function pmprosed_force_set_expiration_enddate( $enddate, $user_id, $level, $sta
 	// Try to get the discount code ID if one is being used, this is similar to the checkout.php logic.
 	// Using the $discount_code_id global as a fallback for backwards compatibility - this should always be attached to the level object.
 	global $wpdb, $discount_code, $discount_code_id;
+
+	// Use local variables to avoid mutating globals.
+	$local_discount_code     = null;
+	$local_discount_code_id  = null;
+
 	if ( ! empty( $level->discount_code ) ) {
-		$discount_code = $level->discount_code;
-		$discount_code_id = empty( $level->code_id ) ? $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $discount_code ) . "' LIMIT 1" ) : $level->code_id;
-	} elseif ( ! empty( $discount_code ) && empty( $discount_code_id ) ) {
-		$discount_code_id = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $discount_code ) . "' LIMIT 1" );
-	} else {
-		$discount_code_id = null;
+		// Prefer the discount code attached to the level object.
+		$local_discount_code = $level->discount_code;
+		$local_discount_code_id = empty( $level->code_id )
+			? $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $local_discount_code ) . "' LIMIT 1" )
+			: $level->code_id;
+	} elseif ( ! empty( $discount_code ) ) {
+		// Fall back to the global discount code, if available.
+		$local_discount_code = $discount_code;
+		if ( ! empty( $discount_code_id ) ) {
+			// If a global discount code ID is already set, use it.
+			$local_discount_code_id = $discount_code_id;
+		} else {
+			// Otherwise, look up the ID based on the global discount code.
+			$local_discount_code_id = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $local_discount_code ) . "' LIMIT 1" );
+		}
 	}
 
 	// Does this particular level have a set expiration date.
-	$set_expiration_date = pmpro_getSetExpirationDate( $level->id, $discount_code_id );
+	$set_expiration_date = pmpro_getSetExpirationDate( $level->id, $local_discount_code_id );
 	if ( ! empty( $set_expiration_date ) ) {
 		$enddate = pmprosed_fixDate( $set_expiration_date );
 	}
