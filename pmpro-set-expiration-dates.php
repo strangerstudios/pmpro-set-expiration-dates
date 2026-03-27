@@ -100,8 +100,8 @@ function pmprosed_fixDate( $set_date, $current_date = null ) {
 	// Add months.
 	if ( ! empty( $add_months ) ) {
 		for ( $i = 0; $i < $add_months; $i++ ) {
-			// If "M1", only add months if current date of month has already passed.
-			if ( 0 == $i ) {
+			// If "M1" with no fixed day set, only add months if current day has already passed.
+			if ( 0 == $i && 0 == $set_d ) {
 				if ( $temp_d < $current_d ) {
 					$temp_m++;
 					$add_months--;
