@@ -10,6 +10,10 @@ Text Domain: pmpro-set-expiration-dates
 Domain Path: /languages
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /* Load text domain */
 function pmprosed_load_plugin_text_domain() {
 	load_plugin_textdomain( 'pmpro-set-expiration-dates', false, basename( dirname( __FILE__ ) ) . '/languages' );
@@ -23,7 +27,7 @@ add_action( 'init', 'pmprosed_load_plugin_text_domain' );
  * Add Set Expiration Date settings to the Expirations tab of the edit level settings.
  */
 function pmprosed_pmpro_membership_level_after_expiration_settings() {
-	$level_id = intval( $_REQUEST['edit'] );
+	$level_id = isset( $_REQUEST['edit'] ) ? intval( $_REQUEST['edit'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: selects which level's setting to display on the edit level page.
 	if ( $level_id > 0 ) {
 		$set_expiration_date = pmpro_getSetExpirationDate( $level_id );
 	} else {
@@ -51,7 +55,9 @@ add_action( 'pmpro_membership_level_after_expiration_settings', 'pmprosed_pmpro_
 
 // save level cost text when the level is saved/added
 function pmprosed_pmpro_save_membership_level( $level_id ) {
-	pmpro_saveSetExpirationDate( $level_id, $_REQUEST['set_expiration_date'] );            // add level cost text for this level
+	// Nonce and capability are verified by PMPro core before pmpro_save_membership_level fires (adminpages/membershiplevels.php).
+	$set_expiration_date = isset( $_REQUEST['set_expiration_date'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['set_expiration_date'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	pmpro_saveSetExpirationDate( $level_id, $set_expiration_date );            // add level cost text for this level
 }
 add_action( 'pmpro_save_membership_level', 'pmprosed_pmpro_save_membership_level' );
 
@@ -169,6 +175,7 @@ function pmprosed_pmpro_checkout_level( $level, $discount_code_id = null ) {
 	if ( empty( $discount_code_id ) ) {
 		// get discount code passed in, supporting multiple request keys for backward compatibility
 		$raw_discount_code = '';
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only lookup of the checkout discount code; the value is whitelisted to [A-Za-z0-9-] by preg_replace below.
 		if ( ! empty( $_REQUEST['pmpro_discount_code'] ) ) {
 			$raw_discount_code = $_REQUEST['pmpro_discount_code'];
 		} elseif ( ! empty( $_REQUEST['discount_code'] ) ) {
@@ -176,12 +183,13 @@ function pmprosed_pmpro_checkout_level( $level, $discount_code_id = null ) {
 		} elseif ( ! empty( $_REQUEST['code'] ) ) {
 			$raw_discount_code = $_REQUEST['code'];
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( ! empty( $raw_discount_code ) ) {
 			$discount_code = preg_replace( '/[^A-Za-z0-9\-]/', '', $raw_discount_code );
 
 			if ( ! empty( $discount_code ) ) {
-				$discount_code_id = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $discount_code ) . "' LIMIT 1" );
+				$discount_code_id = $wpdb->get_var( "SELECT id FROM $wpdb->pmpro_discount_codes WHERE code = '" . esc_sql( $discount_code ) . "' LIMIT 1" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- PMPro custom table; value is whitelisted and escaped with esc_sql().
 			} else {
 				$discount_code_id = null;
 			}
@@ -309,8 +317,11 @@ add_action( 'pmpro_discount_code_after_level_settings', 'pmprosed_pmpro_discount
 
 // save level cost text for the code when the code is saved/added
 function pmprosed_pmpro_save_discount_code_level( $code_id, $level_id ) {
-	$all_levels_a          = $_REQUEST['all_levels'];                            // array of level ids checked for this code
-	$set_expiration_date_a = $_REQUEST['set_expiration_date'];            // expiration dates for levels checked
+	// Nonce and capability are verified by PMPro core before pmpro_save_discount_code_level fires (adminpages/discountcodes.php).
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	$all_levels_a          = isset( $_REQUEST['all_levels'] ) ? array_map( 'intval', (array) $_REQUEST['all_levels'] ) : array();                            // array of level ids checked for this code
+	$set_expiration_date_a = isset( $_REQUEST['set_expiration_date'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_REQUEST['set_expiration_date'] ) ) : array();            // expiration dates for levels checked
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 	if ( ! empty( $all_levels_a ) ) {
 		$key = array_search( $level_id, $all_levels_a );                // which level is it in the list?
@@ -361,13 +372,13 @@ function pmprosed_show_admin_notice_past_dates() {
 	foreach ( $levels as $level ) {
 		if ( $level->allow_signups && pmprosed_is_past_date( $level->id ) ) {
 			$is_past                      = true;
-			$problem_levels[ $level->id ] = '<a href="' . add_query_arg(
+			$problem_levels[ $level->id ] = '<a href="' . esc_url( add_query_arg(
 				array(
 					'page' => 'pmpro-membershiplevels',
 					'edit' => $level->id,
 				),
 				admin_url( 'admin.php' )
-			) . '">' . $level->name . '</a>';
+			) ) . '">' . esc_html( $level->name ) . '</a>';
 		}
 	}
 
@@ -379,14 +390,14 @@ function pmprosed_show_admin_notice_past_dates() {
 		<div class="notice notice-warning">
 			<p>
 			<?php
-				echo sprintf( __( '<strong>Warning:</strong> The following membership levels have an expiration date that is in the past: %s.', 'pmpro-set-expiration-dates' ), $levels );
+				echo wp_kses_post( sprintf( __( '<strong>Warning:</strong> The following membership levels have an expiration date that is in the past: %s.', 'pmpro-set-expiration-dates' ), $levels ) );
 			?>
 			</p>
 		</div>
 		<?php
 	}
 }
-if ( isset( $_REQUEST['page'] ) && 'pmpro-membershiplevels' == $_REQUEST['page'] && ! isset( $_REQUEST['edit'] ) ) {
+if ( isset( $_REQUEST['page'] ) && 'pmpro-membershiplevels' == $_REQUEST['page'] && ! isset( $_REQUEST['edit'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only routing: decides whether to show an admin notice.
 	add_action( 'admin_notices', 'pmprosed_show_admin_notice_past_dates' );
 }
 
@@ -440,11 +451,13 @@ add_filter( 'plugin_row_meta', 'pmprosed_plugin_row_meta', 10, 2 );
 function pmprosed_pmpro_level_expiration_text( $expiration_text, $level ) {
 
     // See if a discount code was used with the Set Expiration Date.
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- Read-only: looks up the discount code to display expiration text.
     if ( ! empty( $_REQUEST['pmpro_discount_code'] ) ) {
-        $discount_code = new PMPro_Discount_Code($_REQUEST['pmpro_discount_code']);
+        $discount_code = new PMPro_Discount_Code( sanitize_text_field( wp_unslash( $_REQUEST['pmpro_discount_code'] ) ) );
     } elseif ( ! empty( $_REQUEST['code'] ) ) {
-        $discount_code = new PMPro_Discount_Code($_REQUEST['code']);
+        $discount_code = new PMPro_Discount_Code( sanitize_text_field( wp_unslash( $_REQUEST['code'] ) ) );
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     // Get the set_expiration_date for either the level ID or discount code if that is set?
     if ( ! empty( $discount_code->id ) ) {
