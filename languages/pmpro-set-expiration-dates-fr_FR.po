@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Paid Memberships Pro - Set Expiration Dates Add On plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Paid Memberships Pro - Set Expiration Dates Add On 0.8\n"
+"Project-Id-Version: Paid Memberships Pro - Set Expiration Dates Add On 0.8.1\n"
 "Report-Msgid-Bugs-To: info@paidmembershipspro.com\n"
 "Last-Translator: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "Language-Team: Paid Memberships Pro <info@paidmembershipspro.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-30T10:37:35+00:00\n"
+"POT-Creation-Date: 2026-09-29T15:33:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: pmpro-set-expiration-dates\n"
@@ -21,24 +21,29 @@ msgstr ""
 #: pmpro-set-expiration-dates.php:33
 #: pmpro-set-expiration-dates.php:314
 #: pmpro-set-expiration-dates.php:328
+#: pmpro-set-expiration-dates.php:37
+#: pmpro-set-expiration-dates.php:339
 msgid "Set Expiration Date"
 msgstr "Fixer la date d'échéance"
 
 #: pmpro-set-expiration-dates.php:33
 #: pmpro-set-expiration-dates.php:32
 #: pmpro-set-expiration-dates.php:34
+#: pmpro-set-expiration-dates.php:38
 msgid "To have this level expire on a specific date, enter it below in YYYY-MM-DD format"
 msgstr "Pour que ce niveau expire à une date précise, saisissez-le ci-dessous au format AAAA-MM-JJ"
 
 #: pmpro-set-expiration-dates.php:33
 #: pmpro-set-expiration-dates.php:32
 #: pmpro-set-expiration-dates.php:34
+#: pmpro-set-expiration-dates.php:38
 msgid "Note:"
 msgstr "Note :"
 
 #: pmpro-set-expiration-dates.php:33
 #: pmpro-set-expiration-dates.php:32
 #: pmpro-set-expiration-dates.php:34
+#: pmpro-set-expiration-dates.php:38
 msgid "You must also set an expiration date above (e.g. 1 Year) which will be overwritten by the value below."
 msgstr "Vous devez également fixer une date d'expiration au-dessus (par exemple 1 an) qui sera remplacée par la valeur ci-dessous."
 
@@ -49,12 +54,15 @@ msgstr "Vous devez également fixer une date d'expiration au-dessus (par exemple
 #: pmpro-set-expiration-dates.php:38
 #: pmpro-set-expiration-dates.php:280
 #: pmpro-set-expiration-dates.php:294
+#: pmpro-set-expiration-dates.php:42
+#: pmpro-set-expiration-dates.php:302
 msgid "Expiration Date"
 msgstr "Date d'échéance"
 
 #: pmpro-set-expiration-dates.php:41
 #: pmpro-set-expiration-dates.php:40
 #: pmpro-set-expiration-dates.php:42
+#: pmpro-set-expiration-dates.php:46
 msgid "YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 for current/next month."
 msgstr "Format AAAA-MM-JJ. Entrez \"Y\" pour l'année en cours, \"Y2\" pour l'année prochaine. M, M2 pour le mois en cours/suivant."
 
@@ -62,6 +70,7 @@ msgstr "Format AAAA-MM-JJ. Entrez \"Y\" pour l'année en cours, \"Y2\" pour l'an
 #: pmpro-set-expiration-dates.php:281
 #: pmpro-set-expiration-dates.php:284
 #: pmpro-set-expiration-dates.php:298
+#: pmpro-set-expiration-dates.php:306
 msgid "YYYY-MM-DD format. Enter \"Y\" for current year, \"Y2\" for next year. M, M2 for current/next month. Be sure to set an expiration date above as well."
 msgstr "Format AAAA-MM-JJ. Saisissez \"Y\" pour l'année en cours, \"Y2\" pour l'année prochaine. M, M2 pour le mois en cours/le mois suivant. Pensez à fixer également une date d'échéance ci-dessus."
 
@@ -74,6 +83,7 @@ msgstr "Attention : Le(s) niveau(x) suivant(s) ont une date d'expiration passée
 #: pmpro-set-expiration-dates.php:411
 #: pmpro-set-expiration-dates.php:414
 #: pmpro-set-expiration-dates.php:428
+#: pmpro-set-expiration-dates.php:439
 msgid "View Documentation"
 msgstr "Afficher la documentation"
 
@@ -81,6 +91,7 @@ msgstr "Afficher la documentation"
 #: pmpro-set-expiration-dates.php:411
 #: pmpro-set-expiration-dates.php:414
 #: pmpro-set-expiration-dates.php:428
+#: pmpro-set-expiration-dates.php:439
 msgid "Docs"
 msgstr "Documentation"
 
@@ -88,6 +99,7 @@ msgstr "Documentation"
 #: pmpro-set-expiration-dates.php:412
 #: pmpro-set-expiration-dates.php:415
 #: pmpro-set-expiration-dates.php:429
+#: pmpro-set-expiration-dates.php:440
 msgid "Visit Customer Support Forum"
 msgstr "Visitez le forum de support client"
 
@@ -95,6 +107,7 @@ msgstr "Visitez le forum de support client"
 #: pmpro-set-expiration-dates.php:412
 #: pmpro-set-expiration-dates.php:415
 #: pmpro-set-expiration-dates.php:429
+#: pmpro-set-expiration-dates.php:440
 msgid "Support"
 msgstr "Support"
 
@@ -102,6 +115,7 @@ msgstr "Support"
 #: pmpro-set-expiration-dates.php:428
 #: pmpro-set-expiration-dates.php:447
 #: pmpro-set-expiration-dates.php:458
+#: pmpro-set-expiration-dates.php:471
 msgid "Membership expires on"
 msgstr "L'adhésion se finit le"
 
@@ -142,6 +156,7 @@ msgstr ""
 #: pmpro-set-expiration-dates.php:365
 #: pmpro-set-expiration-dates.php:368
 #: pmpro-set-expiration-dates.php:382
+#: pmpro-set-expiration-dates.php:393
 #, php-format
 msgid "<strong>Warning:</strong> The following membership levels have an expiration date that is in the past: %s."
 msgstr ""
